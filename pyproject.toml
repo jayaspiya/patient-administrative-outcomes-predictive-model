@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "patient-administrative-outcomes-predictive-model"
+version = "0.1.0"
+description = ""
+authors = ["Jayas Piya <pzayazz@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyspark = "^3.5.3"
+ipykernel = "^6.29.5"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
