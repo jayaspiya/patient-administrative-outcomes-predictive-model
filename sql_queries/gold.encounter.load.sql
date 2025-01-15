@@ -2,6 +2,7 @@ SELECT
     encounter.encounterId, 
     encounter.patientId, 
     patient.gender, 
+    encounter.periodStart encounterTs,
     CASE 
         WHEN date_diff(year, patient.birthDate, encounter.periodStart) BETWEEN 18 AND 29 THEN 'young adults' 
         WHEN date_diff(year, patient.birthDate, encounter.periodStart) BETWEEN 30 AND 39 THEN 'young adulthood' 
