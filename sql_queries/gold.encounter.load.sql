@@ -19,7 +19,6 @@ SELECT
     encounter.status encounterStatus, 
     encounter.encounterClass, 
     encounter.admitSource, 
-    encounter.dischargeDisposition, 
     encounter.displayType encounterType, 
     encounter.priority, 
     IFNULL(condition.riskScore, 0) riskScore, 

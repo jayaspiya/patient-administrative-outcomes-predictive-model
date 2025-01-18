@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS local.gold.encounter (
     encounterStatus STRING,
     encounterClass STRING,
     admitSource STRING,
-    dischargeDisposition STRING,
     encounterType STRING,
     priority STRING,
     riskScore INT,
