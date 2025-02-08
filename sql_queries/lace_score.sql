@@ -62,5 +62,6 @@ select
     num_emer_encounter_6_month,
     emerVisitScore,
     readmissionStatus,
-    (losScore+CciScore+acutenessScore+emerVisitScore) calcScore
+    (losScore+CciScore+acutenessScore+emerVisitScore) calcScore,
+    if((losScore+CciScore+acutenessScore+emerVisitScore) > 9, 'No Readmission', 'Readmission') lace_prediction
 from encounter_cal
