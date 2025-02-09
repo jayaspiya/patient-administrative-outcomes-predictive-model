@@ -1,35 +1,43 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
 
 st.title("Patient Readmission Model")
-st.header("Predictive Model vs LACE Index")
-st.text("Comparision between predictive model & lace index accuracy")
+st.header("Dashboard")
+st.text("Sample Data")
 encounter = pd.read_parquet("../dataset/encounter.parquet")
 encounter["encounterYear"] = encounter["encounterTs"].dt.year
-total_encounter = encounter.groupby("encounterYear").size().reset_index(name="count")
-model_encounter = (
-    encounter[encounter["prediction"] == encounter["readmissionStatus"]]
-    .groupby("encounterYear")
-    .size()
-    .reset_index(name="count")
-)
 
-# Calculate LACE accuracy per year
-lace_encounter = (
-    encounter[encounter["lace_prediction"] == encounter["readmissionStatus"]]
-    .groupby("encounterYear")
-    .size()
-    .reset_index(name="count")
-)
+st.dataframe(encounter[encounter['encounterYear'] == 2200].head(5))
 
-# Encounter Left join
-result = total_encounter.merge(model_encounter, on="encounterYear", how="left", suffixes=("", "_model"))
-result = result.merge(lace_encounter, on="encounterYear", how="left", suffixes=("", "_lace"))
-# Calculate percentages
-result["model_prediction"] = round(result["count_model"] * 100 / result["count"], 2)
-result["lace_prediction"] = round(result["count_lace"] * 100 / result["count"], 2)
+st.subheader("Readmission Over Year")
+st.line_chart(
+    encounter.groupby(['encounterYear', 'readmissionStatus']).size().reset_index(name='count'),
+    x="encounterYear", y="count", color="readmissionStatus")
 
-result = result[["encounterYear", "model_prediction", "lace_prediction"]].sort_values("encounterYear", ascending=False)
+def plot_pie_chart(df, labels, value='count'):
+    fig, ax = plt.subplots()
+    ax.pie(df[value], labels=df[labels], autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures the pie is circular.
+    return fig
 
-st.line_chart(result, x="encounterYear", y=["model_prediction", "lace_prediction"])
+st.subheader("Admission Source Distribution")
+st.write("Pie chart representation of admission sources.")
+
+st.pyplot(plot_pie_chart(encounter.groupby(['priority']).size().reset_index(name='count'), 'priority'))
+
+st.subheader("Age Group Over Year")
+st.bar_chart(
+    encounter.groupby(['encounterYear', 'encounterClass']).size().reset_index(name='count'),
+    x="encounterYear", y="count", color="encounterClass", horizontal=True)
+
+st.subheader("Age Group Over Year")
+st.line_chart(
+    encounter.groupby(['encounterYear', 'ageGroup']).size().reset_index(name='count'),
+    x="encounterYear", y="count", color="ageGroup")
+
+st.subheader("Priority Over Year")
+st.line_chart(
+    encounter.groupby(['encounterYear', 'priority']).size().reset_index(name='count'),
+    x="encounterYear", y="count", color="priority")
