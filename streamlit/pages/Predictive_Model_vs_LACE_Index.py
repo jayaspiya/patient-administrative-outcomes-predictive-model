@@ -39,6 +39,40 @@ axes[1].set_xlabel('Predicted')
 axes[1].set_ylabel('Actual')
 st.pyplot(fig)
 
+TN, FP, FN, TP = conf_matrix_1.ravel()
+precision = TP / (TP + FP) if (TP + FP) > 0 else 0
+recall = TP / (TP + FN) if (TP + FN) > 0 else 0
+f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+TN2, FP2, FN2, TP2 = conf_matrix_2.ravel()
+precision2 = TP2 / (TP2 + FP2) if (TP2 + FP2) > 0 else 0
+recall2 = TP2 / (TP2 + FN2) if (TP2 + FN2) > 0 else 0
+f1_score2 = 2 * (precision2 * recall2) / (precision2 + recall2) if (precision2 + recall2) > 0 else 0
+metrics = ['Precision', 'Recall', 'F1-Score']
+lace_scores = [precision, recall, f1_score]
+model_scores = [precision2, recall2, f1_score2]
+
+x = np.arange(len(metrics))
+width = 0.3
+fig, ax = plt.subplots()
+ax.bar(x - width/2, lace_scores, width, label='LACE Prediction', color='b')
+ax.bar(x + width/2, model_scores, width, label='Model Prediction', color='g')
+
+ax.set_xlabel('Metrics')
+ax.set_ylabel('Score')
+ax.set_title('LACE vs Model Prediction Performance')
+ax.set_xticks(x)
+ax.set_xticklabels(metrics)
+ax.set_ylim(0, 1.1)
+ax.legend()
+for i, v in enumerate(lace_scores):
+    ax.text(i - width/2, v + 0.02, f"{v:.2f}", ha='center', fontsize=10)
+for i, v in enumerate(model_scores):
+    ax.text(i + width/2, v + 0.02, f"{v:.2f}", ha='center', fontsize=10)
+
+st.pyplot(fig)
+
+
 st.write("### Accuracy Over Year")
 total_encounter = encounter.groupby("encounterYear").size().reset_index(name="count")
 model_encounter = (
